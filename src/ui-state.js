@@ -76,29 +76,8 @@ export function updateState(uiManager, playerData) {
         }
     }
 
-    // Auto-restart last task while energy cell is active (only when we didn't manually stop)
-    if (hasActiveEnergy && prevActiveTask && !playerData.activeTask && !uiManager._manualStop) {
-        const taskId = prevActiveTask.taskId;
-        let duration = prevActiveTask.duration;
-
-        if (!duration) {
-            // Fallback: look up duration from SKILLS if missing on legacy data
-            for (const skill of Object.values(SKILLS)) {
-                const t = skill.tasks.find((t) => t.id === taskId);
-                if (t) {
-                    duration = t.duration;
-                    break;
-                }
-            }
-        }
-
-        if (taskId && duration) {
-            // Start the next iteration immediately and keep UI visible;
-            // we'll get a fresh state_update for the new task.
-            uiManager.network.startTask(taskId, duration);
-            return;
-        }
-    } else if (!playerData.activeTask && !hasActiveEnergy) {
+    // Remove auto-restart behavior: only reset idle flags when no energy
+    if (!playerData.activeTask && !hasActiveEnergy) {
         // If there is no active task and no active energy, clear any manual-stop suppression
         uiManager._manualStop = false;
         uiManager._isIdle = false;
