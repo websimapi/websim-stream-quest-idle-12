@@ -10,14 +10,14 @@ export function renderSkillsList(uiManager) {
         const div = document.createElement('div');
         div.className = 'skill-item';
 
+        // Highlight the currently selected skill in the sidebar
+        if (uiManager.currentSkillId && uiManager.currentSkillId === skill.id) {
+            div.classList.add('active');
+        }
+
         const totalXp = computeSkillXp(state, skill.id);
         const levelInfo = getLevelInfo(totalXp);
         const progressPct = Math.round(levelInfo.progress * 100);
-
-        // Highlight the currently selected skill, if any
-        if (uiManager.selectedSkillId === skill.id) {
-            div.classList.add('active');
-        }
 
         div.innerHTML = `
                 <img src="${skill.icon}" alt="${skill.name}">
@@ -40,8 +40,8 @@ export function showSkillDetails(uiManager, skill) {
     const { skillDetails, state, computeEnergyCount } = uiManager;
     if (!skillDetails) return;
 
-    // Track which skill is currently selected so state updates can refresh correctly
-    uiManager.selectedSkillId = skill.id;
+    // Remember which skill is currently being shown so state updates can refresh correctly
+    uiManager.currentSkillId = skill.id;
 
     skillDetails.style.display = 'block';
 

@@ -76,8 +76,29 @@ export function updateState(uiManager, playerData) {
         }
     }
 
-    // Remove auto-restart behavior: only reset idle flags when no energy
-    if (!playerData.activeTask && !hasActiveEnergy) {
+    // Auto-restart last task while energy cell is active (only when we didn't manually stop)
+    if (hasActiveEnergy && prevActiveTask && !playerData.activeTask && !uiManager._manualStop) {
+        const taskId = prevActiveTask.taskId;
+        let duration = prevActiveTask.duration;
+
+        if (!duration) {
+            // Fallback: look up duration from SKILLS if missing on legacy data
+            for (const skill of Object.values(SKILLS)) {
+                const t = skill.tasks.find((t) => t.id === taskId);
+                if (t) {
+                    duration = t.duration;
+                    break;
+                }
+            }
+        }
+
+        if (taskId && duration) {
+            // Start the next iteration immediately and keep UI visible;
+            // we'll get a fresh state_update for the new task.
+            uiManager.network.startTask(taskId, duration);
+            return;
+        }
+    } else if (!playerData.activeTask && !hasActiveEnergy) {
         // If there is no active task and no active energy, clear any manual-stop suppression
         uiManager._manualStop = false;
         uiManager._isIdle = false;
@@ -108,10 +129,11 @@ export function updateState(uiManager, playerData) {
 
         // Update Buttons in current view
         if (uiManager.skillDetails.style.display !== 'none') {
-            // Refresh grid to update disabled states, but only for the currently selected skill
-            const activeSkill = findSkillByTaskId(playerData.activeTask.taskId);
-            if (activeSkill && uiManager.selectedSkillId === activeSkill.id) {
-                showSkillDetails(uiManager, activeSkill);
+            // Refresh the currently viewed skill to update button disabled states
+            const currentSkillId = uiManager.currentSkillId;
+            const skillOfCurrentView = currentSkillId ? SKILLS[currentSkillId] : null;
+            if (skillOfCurrentView) {
+                showSkillDetails(uiManager, skillOfCurrentView);
             }
         }
     } else {
@@ -120,10 +142,13 @@ export function updateState(uiManager, playerData) {
         if (!hasActiveEnergy) {
             uiManager.stopProgressLoop();
 
-            // Refresh grid to re-enable buttons for the currently selected skill
-            const currentSkillId = uiManager.selectedSkillId;
-            if (currentSkillId && SKILLS[currentSkillId]) {
-                showSkillDetails(uiManager, SKILLS[currentSkillId]);
+            // Refresh grid to re-enable buttons on the currently viewed skill
+            if (uiManager.skillDetails.style.display !== 'none') {
+                const currentSkillId = uiManager.currentSkillId;
+                const skillOfCurrentView = currentSkillId ? SKILLS[currentSkillId] : null;
+                if (skillOfCurrentView) {
+                    showSkillDetails(uiManager, skillOfCurrentView);
+                }
             }
         } else if (uiManager._isIdle && uiManager.state && uiManager.state.pausedTask) {
             // When idle for a specific task, ensure the header text/button reflect idle state
