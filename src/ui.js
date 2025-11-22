@@ -8,6 +8,22 @@ import { startProgressLoop as startProgressLoopImpl, stopProgressLoop as stopPro
 
 const ONE_HOUR_MS = 60 * 60 * 1000; // matches server-side energy duration
 
+// Preload woodcutting scene images so they are ready when switching tabs/skills
+function preloadWoodcuttingScenes() {
+    const scenePaths = [
+        'scene_wood_beginner.png',
+        'scene_wood_intermediate.png',
+        'scene_wood_advanced.png',
+        'scene_wood_expert.png',
+        'scene_wood_legendary.png'
+    ];
+
+    scenePaths.forEach(src => {
+        const img = new Image();
+        img.src = src;
+    });
+}
+
 export class UIManager {
     constructor(networkManager, isHost = false) {
         this.network = networkManager;
@@ -53,6 +69,9 @@ export class UIManager {
         this.userInfoEl = document.getElementById('user-info');
         this.clientUserDropdown = document.getElementById('client-user-dropdown');
         this.clientDelinkBtn = document.getElementById('client-delink-btn');
+
+        // Preload woodcutting region scenes to avoid flash-on-load when switching
+        preloadWoodcuttingScenes();
 
         // Pre-fill host channel if saved
         const savedChannel = localStorage.getItem('sq_host_channel');
