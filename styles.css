@@ -643,9 +643,11 @@ main {
     font-weight: 600;
 }
 
+/* Scene container for woodcutting tiers */
 .tier-scene {
     width: 100%;
-    aspect-ratio: 16 / 9;
+    /* Constrain height so the scene doesn't blow out the layout */
+    height: min(260px, 30vh);
     border-radius: 10px;
     overflow: hidden;
     border: 1px solid var(--border);
