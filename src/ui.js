@@ -19,6 +19,8 @@ export class UIManager {
         this._manualStop = false; // mirrors playerData.manualStop
         this._lastTask = null;    // mirrors playerData.pausedTask or activeTask
         this._isIdle = false;     // derived from playerData.pausedTask
+        // New: remember selected tier in woodcutting UI
+        this.woodcuttingActiveTier = 'beginner';
 
         // Elements
         this.skillsList = document.getElementById('skills-list');
