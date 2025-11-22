@@ -31,7 +31,17 @@ export function renderSkillsList(uiManager) {
                     </div>
                 </div>
             `;
-        div.onclick = () => showSkillDetails(uiManager, skill);
+        div.onclick = () => {
+            // Immediately update selected skill and visual highlight locally
+            uiManager.currentSkillId = skill.id;
+            if (uiManager.skillsList) {
+                const items = uiManager.skillsList.querySelectorAll('.skill-item');
+                items.forEach(itemEl => {
+                    itemEl.classList.toggle('active', itemEl === div);
+                });
+            }
+            showSkillDetails(uiManager, skill);
+        };
         skillsList.appendChild(div);
     });
 }
