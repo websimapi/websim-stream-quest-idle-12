@@ -36,9 +36,24 @@ export function showSkillDetails(uiManager, skill) {
     if (!skillDetails) return;
 
     skillDetails.style.display = 'block';
-    document.getElementById('detail-icon').src = skill.icon;
-    document.getElementById('detail-name').innerText = skill.name;
-    document.getElementById('detail-desc').innerText = skill.description;
+
+    // Handle header visibility and content
+    const headerEl = skillDetails.querySelector('.skill-header');
+    if (skill.id === 'woodcutting') {
+        // Hide redundant header for woodcutting
+        if (headerEl) headerEl.style.display = 'none';
+    } else {
+        // Show and populate header for non-woodcutting skills
+        if (headerEl) {
+            headerEl.style.display = 'flex';
+            const iconEl = document.getElementById('detail-icon');
+            const nameEl = document.getElementById('detail-name');
+            const descEl = document.getElementById('detail-desc');
+            if (iconEl) iconEl.src = skill.icon;
+            if (nameEl) nameEl.innerText = skill.name;
+            if (descEl) descEl.innerText = skill.description;
+        }
+    }
 
     const grid = document.getElementById('task-grid');
     grid.innerHTML = '';
