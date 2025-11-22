@@ -21,6 +21,8 @@ export class UIManager {
         this._isIdle = false;     // derived from playerData.pausedTask
         // New: remember selected tier in woodcutting UI
         this.woodcuttingActiveTier = 'beginner';
+        // New: track currently selected skill so UI refreshes don't jump screens
+        this.selectedSkillId = null;
 
         // Elements
         this.skillsList = document.getElementById('skills-list');

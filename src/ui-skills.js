@@ -14,6 +14,11 @@ export function renderSkillsList(uiManager) {
         const levelInfo = getLevelInfo(totalXp);
         const progressPct = Math.round(levelInfo.progress * 100);
 
+        // Highlight the currently selected skill, if any
+        if (uiManager.selectedSkillId === skill.id) {
+            div.classList.add('active');
+        }
+
         div.innerHTML = `
                 <img src="${skill.icon}" alt="${skill.name}">
                 <div class="skill-text">
@@ -34,6 +39,9 @@ export function renderSkillsList(uiManager) {
 export function showSkillDetails(uiManager, skill) {
     const { skillDetails, state, computeEnergyCount } = uiManager;
     if (!skillDetails) return;
+
+    // Track which skill is currently selected so state updates can refresh correctly
+    uiManager.selectedSkillId = skill.id;
 
     skillDetails.style.display = 'block';
 

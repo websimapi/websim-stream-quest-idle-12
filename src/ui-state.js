@@ -108,12 +108,10 @@ export function updateState(uiManager, playerData) {
 
         // Update Buttons in current view
         if (uiManager.skillDetails.style.display !== 'none') {
-            // Refresh grid to update disabled states
+            // Refresh grid to update disabled states, but only for the currently selected skill
             const activeSkill = findSkillByTaskId(playerData.activeTask.taskId);
-            if (activeSkill) {
-                const currentTitle = document.getElementById('detail-name').innerText;
-                const skillOfCurrentView = findSkillByName(currentTitle);
-                if (skillOfCurrentView) showSkillDetails(uiManager, skillOfCurrentView);
+            if (activeSkill && uiManager.selectedSkillId === activeSkill.id) {
+                showSkillDetails(uiManager, activeSkill);
             }
         }
     } else {
@@ -122,10 +120,11 @@ export function updateState(uiManager, playerData) {
         if (!hasActiveEnergy) {
             uiManager.stopProgressLoop();
 
-            // Refresh grid to re-enable buttons
-            const currentTitle = document.getElementById('detail-name').innerText;
-            const skillOfCurrentView = findSkillByName(currentTitle);
-            if (skillOfCurrentView) showSkillDetails(uiManager, skillOfCurrentView);
+            // Refresh grid to re-enable buttons for the currently selected skill
+            const currentSkillId = uiManager.selectedSkillId;
+            if (currentSkillId && SKILLS[currentSkillId]) {
+                showSkillDetails(uiManager, SKILLS[currentSkillId]);
+            }
         } else if (uiManager._isIdle && uiManager.state && uiManager.state.pausedTask) {
             // When idle for a specific task, ensure the header text/button reflect idle state
             const labelEl = document.getElementById('task-label');
