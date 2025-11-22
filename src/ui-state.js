@@ -127,29 +127,18 @@ export function updateState(uiManager, playerData) {
             uiManager.startProgressLoop(playerData.activeTask);
         }
 
-        // Update Buttons in current view
-        if (uiManager.skillDetails.style.display !== 'none') {
-            // Refresh the currently viewed skill to update button disabled states
-            const currentSkillId = uiManager.currentSkillId;
-            const skillOfCurrentView = currentSkillId ? SKILLS[currentSkillId] : null;
-            if (skillOfCurrentView) {
-                showSkillDetails(uiManager, skillOfCurrentView);
-            }
-        }
+        // NOTE: previously we re-rendered the entire skill details view here
+        // on every state update; this was removed to keep UI switches client-side
+        // and avoid unnecessary work on realtime updates.
     } else {
         // No active task: if we also have no active energy, fully reset UI;
         // otherwise keep the header visible and the bar frozen.
         if (!hasActiveEnergy) {
             uiManager.stopProgressLoop();
 
-            // Refresh grid to re-enable buttons on the currently viewed skill
-            if (uiManager.skillDetails.style.display !== 'none') {
-                const currentSkillId = uiManager.currentSkillId;
-                const skillOfCurrentView = currentSkillId ? SKILLS[currentSkillId] : null;
-                if (skillOfCurrentView) {
-                    showSkillDetails(uiManager, skillOfCurrentView);
-                }
-            }
+            // NOTE: previously we re-rendered the entire skill details view here
+            // when stopping a task; this is no longer needed for client-side UI
+            // switching and has been removed to reduce lag.
         } else if (uiManager._isIdle && uiManager.state && uiManager.state.pausedTask) {
             // When idle for a specific task, ensure the header text/button reflect idle state
             const labelEl = document.getElementById('task-label');
