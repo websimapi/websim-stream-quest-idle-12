@@ -72,35 +72,35 @@ export function showSkillDetails(uiManager, skill) {
         const tiers = [
             {
                 id: 'beginner',
-                label: 'Beginner (Lv 1–10)',
+                label: 'Whispering Sapling Glade',
                 minLevel: 1,
                 maxLevel: 10,
                 scene: 'scene_wood_beginner.png'
             },
             {
                 id: 'intermediate',
-                label: 'Intermediate (Lv 11–20)',
+                label: 'Maplecrest Ridge',
                 minLevel: 11,
                 maxLevel: 20,
                 scene: 'scene_wood_intermediate.png'
             },
             {
                 id: 'advanced',
-                label: 'Advanced (Lv 21–35)',
+                label: 'Elderheart Deepwood',
                 minLevel: 21,
                 maxLevel: 35,
                 scene: 'scene_wood_advanced.png'
             },
             {
                 id: 'expert',
-                label: 'Expert (Lv 36–50)',
+                label: 'Ancient Yew Sanctum',
                 minLevel: 36,
                 maxLevel: 50,
                 scene: 'scene_wood_expert.png'
             },
             {
                 id: 'legendary',
-                label: 'Legendary (Lv 51+)',
+                label: 'Worldroot Canyon',
                 minLevel: 51,
                 maxLevel: 999,
                 scene: 'scene_wood_legendary.png'
